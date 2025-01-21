@@ -8,6 +8,8 @@ interface ActionMenuProps {
     deselect: () => void;
     addTodo: () => void;
     deleteMany: () => void;
+    clearCompleted: () => void;
+    anyCompleted: boolean;
     selectCount: number;
 }
 
@@ -19,6 +21,8 @@ describe('ActionMenu', () => {
         deselect: vi.fn(),
         addTodo: vi.fn(),
         deleteMany: vi.fn(),
+        clearCompleted: vi.fn(),
+        anyCompleted: false,
         selectCount: 0
     };
 
@@ -49,6 +53,7 @@ describe('ActionMenu', () => {
             expect(screen.getByRole('button', { name: /select visible/i })).toBeInTheDocument();
             expect(screen.getByRole('button', { name: /delete \(0\)/i })).toBeInTheDocument();
             expect(screen.getByRole('button', { name: /add todo/i })).toBeInTheDocument();
+            expect(screen.getByRole('button', { name: /clear completed/i })).toBeInTheDocument();
         });
 
         it('calls addTodo when Add Todo button is clicked', async () => {
@@ -91,6 +96,28 @@ describe('ActionMenu', () => {
             const deleteButton = screen.getByRole('button', { name: /delete \(0\)/i });
             expect(deleteButton).toBeDisabled();
         });
+
+        it('Clear Completed is disabled when anyCompleted is false', () => {
+            render(<ActionMenu {...defaultProps}  />);
+            
+            const clearButton = screen.getByRole('button', { name: /clear completed/i });
+            expect(clearButton).toBeDisabled();
+        });
+
+        it('Clear Completed is enabled when anyCompleted is true', () => {
+            render(<ActionMenu {...defaultProps} anyCompleted={true} />);
+            
+            const clearButton = screen.getByRole('button', { name: /clear completed/i });
+            expect(clearButton).not.toBeDisabled();
+        });
+
+        it('clear completed to be called when Clear Completed button is clicked', async () => {
+            render(<ActionMenu {...defaultProps} anyCompleted={true} />);
+            
+            const clearButton = screen.getByRole('button', { name: /clear completed/i });
+            await user.click(clearButton);
+            expect(defaultProps.clearCompleted).toHaveBeenCalled();
+        });
     });
 
     describe('Mobile View', () => {
@@ -123,6 +150,7 @@ describe('ActionMenu', () => {
             expect(screen.getByRole('menuitem', { name: /add todo/i })).toBeInTheDocument();
             expect(screen.getByRole('menuitem', { name: /select visible/i })).toBeInTheDocument();
             expect(screen.getByRole('menuitem', { name: /deselect all/i })).toBeInTheDocument();
+            expect(screen.getByRole('menuitem', { name: /clear completed/i })).toBeInTheDocument();
             expect(screen.getByRole('menuitem', { name: /delete \(0\)/i })).toBeInTheDocument();
         });
 

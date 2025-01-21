@@ -57,6 +57,7 @@ export const TodoTable = () => {
             deleteTodoItem(id)
                 .then(() => {
                     toast(DeleteTodoMessages.Success)
+                    setSelected([...selected].filter(x => x !== id))
                 })
                 .catch(() => {
                     toast(DeleteTodoMessages.Failure)
@@ -93,6 +94,10 @@ export const TodoTable = () => {
         onDeleteMultiple([...selected])
     }
 
+    const clearCompleted = async () => {
+        onDeleteMultiple(todoItems.filter(x => x.isDone).map(x => x.id))
+    }
+
     return (
         <Card className="p-4 shadow-md">
             {isCreateDialogOpen && <AddTodoDialog isOpen={isCreateDialogOpen} onConfirm={onNewTodo} setOpen={setIsCreateDialogOpen} />}
@@ -100,6 +105,8 @@ export const TodoTable = () => {
             <div className="flex justify-between mb-6">
                 <FilterTabs filter={filter} setFilter={setFilter} tabs={getTodoFilterTabs(todoItems)} />
                 <ActionMenu 
+                    anyCompleted={todoItems.some(x => x.isDone)}
+                    clearCompleted={clearCompleted}
                     select={selectVisible} 
                     deselect={deselectAll}
                     deleteMany={bulkDelete}
@@ -112,7 +119,7 @@ export const TodoTable = () => {
                     <TableRow>
                         <TableHead className="w-[60px] sm:w-[120px] text-center">Select</TableHead>
                         <TableHead>Title</TableHead>
-                        <TableHead className="text-center w-[50px] sm:w-[100px]">Done</TableHead>
+                        <TableHead className="text-center w-[50px] sm:w-[100px]">Complete</TableHead>
                         <TableHead className='text-center w-[50px] sm:w-[150px]'>Actions</TableHead>
                     </TableRow>
                 </TableHeader>
