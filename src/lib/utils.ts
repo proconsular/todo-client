@@ -30,7 +30,7 @@ export const filterTodos = (todos: TodoItem[], filter: string) => {
 export const sortTodosByDate = (a: TodoItem, b: TodoItem) => {
   const dateA = moment.utc(a.createdAt)
   const dateB = moment.utc(b.createdAt)
-  return dateB - dateA
+  return dateB.unix() - dateA.unix()
 }
 
 export const getTodoFilterTabs = (todoItems: TodoItem[]) => {
