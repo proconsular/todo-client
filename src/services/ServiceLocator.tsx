@@ -1,3 +1,4 @@
+import { FakeTodoService } from "./FakeTodoService";
 import { ITodoService } from "./ITodoService";
 import { RESTTodoService } from "./RESTTodoService";
 
@@ -6,5 +7,5 @@ type ServiceRegistryType = {
 }
 
 export const ServiceRegistry: ServiceRegistryType = {
-    TodoService: new RESTTodoService('http://localhost:5234')
+    TodoService: new FakeTodoService()
 }
